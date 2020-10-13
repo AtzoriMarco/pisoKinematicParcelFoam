@@ -1,3 +1,3 @@
 # pisoKinematicParcelFoam
 
-pisoFoam + icoUncoupledKinematicParcelFoam, for OF7. Just this
+pisoFoam + icoUncoupledKinematicParcelFoam, for OF7. Just that.
