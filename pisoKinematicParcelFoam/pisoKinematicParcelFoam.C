@@ -40,15 +40,28 @@ Description
 #include "pisoControl.H"
 #include "fvOptions.H"
 
+#include "dynamicFvMesh.H"
+#include "basicKinematicCollidingCloud.H"
+
+
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
 int main(int argc, char *argv[])
 {
+
+   argList::addOption
+   (
+       "cloudName",
+       "name",
+       "specify alternative cloud name. default is 'kinematicCloud'"
+   );
+
     #include "postProcess.H"
 
     #include "setRootCaseLists.H"
     #include "createTime.H"
-    #include "createMesh.H"
+   // #include "createMesh.H"
+    #include "createDynamicFvMesh.H"
     #include "createControl.H"
     #include "createFields.H"
     #include "initContinuityErrs.H"
@@ -62,6 +75,14 @@ int main(int argc, char *argv[])
     while (runTime.loop())
     {
         Info<< "Time = " << runTime.timeName() << nl << endl;
+
+        kinematicCloud.storeGlobalPositions();
+
+        mesh.update();
+        if (mesh.changing())
+        {
+            U.correctBoundaryConditions();
+        }
 
         #include "CourantNo.H"
 
@@ -78,6 +99,10 @@ int main(int argc, char *argv[])
 
         laminarTransport.correct();
         turbulence->correct();
+
+        Info<< "Evolving " << kinematicCloud.name() << endl;
+        mu = laminarTransport.nu()*rhoInfValue;
+        kinematicCloud.evolve();
 
         runTime.write();
 
