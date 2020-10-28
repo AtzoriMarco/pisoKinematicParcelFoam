@@ -2,6 +2,8 @@
 
 pisoFoam + icoUncoupledKinematicParcelFoam, for OF7. Just that.
 
+Build with **wclean**, **wmake**
+
 ## Solver
 
 ## Tutorial
